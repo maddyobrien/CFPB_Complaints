@@ -1,0 +1,93 @@
+---
+title: "CFPB Complaints Analysis"
+author: "Maddy O'Brien"
+date: "4/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(lubridate)
+library(tidyverse)
+library(lubridate)
+library(glue)
+library(plotly)
+library(htmlwidgets)
+library(htmltools)
+
+
+options(tigris_use_cache = TRUE)
+library(flexdashboard)
+library(tidyverse)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(janitor)
+library(glue)
+library(leaflet)
+library(RColorBrewer)
+library(htmlwidgets)
+library(htmltools)
+library(tigris)
+library(tmap)
+library(tmaptools)
+library(plotly)
+
+complaints <- readRDS("complaints.rds")
+
+head(complaints)
+
+complaintsBAR <- complaints %>% 
+  count(company, sort = TRUE) %>% 
+  filter(n>8000)
+
+
+plot_ly(data = complaintsBAR, x = ~company, y = ~n,
+                           type = "bar") %>%
+  layout(title = "Top 5 Companies with the most Consumer Complaints", xaxis = list(title = "Company"), yaxis = list(title = "Number of Complaints"))
+
+complaints_counted <- complaints %>%
+    arrange(company) %>%
+    count(product)
+
+experian_complaints <- complaints %>% 
+  filter(company == "Experian Information Solutions Inc.") %>% 
+  group_by(sub_product) %>% 
+  count(sub_product)
+
+plot_ly(data = complaints_counted, x = ~product, y = ~n, type = "bar") %>% 
+  layout(title = "Categories of Complaints", xaxis = list(title = "Category of Complaint"), yaxis = list(title = "Number of Complaints"))
+
+experian_complaints2 <- complaints %>% 
+  filter(company == "Experian Information Solutions Inc.") %>% 
+  group_by(product) %>% 
+  count(product)
+
+plot_ly(data = experian_complaints2, x = ~product, y = ~n, type = "bar") %>% 
+  layout(title = "Categories of Experian Information Solutions Inc Complaints", xaxis = list(title = "Category of Complaint"), yaxis = list(title = "Number of Complaints"))
+
+```
+
+
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
